@@ -1,28 +1,26 @@
 import {useState} from 'react';
 
-function GuestForm({
-    onAddGuest
-}) {
+function GuestForm({addGuest}) {
 
-    // Track the new creature <input /> values
     let [newGuestName, setNewGuestName] = useState('');
     let [newGuestMeal, setNewGuestMeal] = useState('false');
 
-    const onFormSubmit = (evt) => {
-        evt.preventDefault();
-
-        console.log('on submit', newGuestName, newGuestMeal);
-
-        let newGuest = {
-            name: newGuestName,
-            meal: newGuestMeal
-        };
-        onAddGuest(newGuest); 
-    }
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        if (newGuestName) {
+          addGuest({name: newGuestName, kidsMeal: newGuestMeal});
+          setNewGuestName('');
+          setNewGuestMeal(false);
+        }
+        else {
+          alert('The new guest needs a name!');
+        }
+      }
 
     return (
         <>
-           <form onSubmit={handleSubmit}>
+            <h2>Add a new guest</h2>
+      <form onSubmit={handleSubmit}>
         <label>
           Name
         </label>
@@ -63,13 +61,8 @@ function GuestForm({
         </div>
         <button type="submit">Add Guest</button>
       </form>
-     
-      <GuestList guestList={guestList}/>
-      <DinnerSupplies guestList={guestList}/>
-      <Footer/>
-    </>
-  );
-}
-
+        </>
+    );
+};
 
 export default GuestForm;

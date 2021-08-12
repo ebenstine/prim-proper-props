@@ -3,13 +3,15 @@ import axios from 'axios';
 import './App.css';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
+import PartyLeader from '../PartyLeader/PartyLeader';
+import GuestForm from '../GuestForm/GuestForm';
 import GuestList from '../GuestList/GuestList';
-import DinnerSupplies from '../DinnerSupplies/DinnerSupplies';
+import DinnerSupplies from '../DinnerSupplies/DinnerSupplies'
+
 function App() {
   let [guestList, setGuestList] = useState([]);
-  let [newGuestName, setNewGuestName] = useState('');
-  let [newGuestMeal, setNewGuestMeal] = useState('false');
-  
+
+
   //On load, get guests
   useEffect(() => {
     getGuests()
@@ -19,6 +21,7 @@ function App() {
     axios.get('/guests')
       .then(response => {
         setGuestList(response.data)
+
       })
       .catch(err => {
         alert('error getting guests');
@@ -27,13 +30,10 @@ function App() {
   }
 
 
-  const addGuest = () => {
-    axios.post('/guests', { name: newGuestName, kidsMeal: newGuestMeal })
+  const addGuest = (newGuest) => {
+    console.log(newGuest)
+    axios.post('/guests', newGuest)
       .then(response => {
-        // clear inputs
-        setNewGuestName('');
-        setNewGuestMeal(false);
-
         getGuests();
       })
       .catch(err => {
@@ -43,28 +43,14 @@ function App() {
   };
 
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (newGuestName) {
-      addGuest();
-    }
-    else {
-      alert('The new guest needs a name!');
-    }
-  }
-
-  console.log(newGuestMeal)
   return (
     <div className="App">
-      <Header/>
-      <h2>Party Leader</h2>
-      {guestList[0] && <h3>{guestList[0].name}</h3>}
-      <GuestForm
-      addGuest={addGuest}
-      />
-      <GuestList guestList={guestList}/>
-      <DinnerSupplies guestList={guestList}/>
-      <Footer/>
+      <Header />
+      <PartyLeader guestList={guestList}/>
+      <GuestForm addGuest={addGuest} />
+      <GuestList guestList={guestList} />
+      <DinnerSupplies count={guestList.length} />
+      <Footer />
     </div>
   );
 }
